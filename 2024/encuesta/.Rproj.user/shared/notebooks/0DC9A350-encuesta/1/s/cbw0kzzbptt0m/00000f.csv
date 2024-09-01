@@ -1,0 +1,6 @@
+"0","datos <- read_sheet('https://docs.google.com/spreadsheets/d/1FW4EtmIWLB5bo0mXUDiOGJeI9g6uCTxEM00clT2V9ug/edit?usp=sharing')
+"
+"1","[32m✔[39m Reading from ""[36mEncuesta Estadística II 2024 (respuestas)[39m"".
+"
+"1","[32m✔[39m Range [33mRespuestas de formulario 1[39m.
+"
