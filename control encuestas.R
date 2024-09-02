@@ -19,9 +19,18 @@ table(datos$rango)
 # Verificamos que no haya algún NA dentro de estas categorías
 table(is.na(datos$rango))
 
+# Creamos una tabla para ver la cantidad total de encuestas realizadas por cada estudiante
+control_total = datos %>% 
+  group_by(mail) %>% 
+  summarise(n = n())
+control_total
+library(xlsx)
+write.xlsx(control_total, "control_total.xlsx")
+
 # Creamos una tabla para ver la cantidad de encuestas realizadas por cada estudiante en cada rango etario
-control = datos %>% 
+control_desagregado = datos %>% 
   group_by(mail, rango) %>% 
   summarise(n = n())
+control_desagregado
+write.xlsx(control_total, "control_desagregado.xlsx")
 
-control
