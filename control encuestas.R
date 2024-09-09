@@ -19,31 +19,20 @@ table(datos$rango)
 # Verificamos que no haya algún NA dentro de estas categorías
 table(is.na(datos$rango))
 
-# Vamos a codificar los correos electrónicos para que no se compartan visiblemente en la web
-library(encryptr)
-genkeys("##EstII##2024")
-
-
 # Creamos una tabla para ver la cantidad total de encuestas realizadas por cada estudiante
 control_total = datos %>% 
   group_by(mail) %>% 
-  summarise(n = n()) %>% 
-  encrypt(mail)
+  summarise(n = n())
 control_total
 library(xlsx)
 write.xlsx(control_total, "control_total.xlsx")
-# control_total = control_total %>% decrypt(mail)
+
 
 
 # Creamos una tabla para ver la cantidad de encuestas realizadas por cada estudiante en cada rango etario
 control_desagregado = datos %>% 
   group_by(mail, rango) %>% 
   summarise(n = n()) %>% 
-  arrange(mail) %>% 
-  encrypt(mail)
+  arrange(mail)
 control_desagregado
 write.xlsx(control_total, "control_desagregado.xlsx")
-# control_desagregado = control_desagregado %>% decrypt(mail)
-
-# est_II_2024
-

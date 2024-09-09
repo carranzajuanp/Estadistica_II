@@ -103,7 +103,7 @@ library(tidyverse)
 table(datos$genero) %>% kable(col.names = c("Género", "Frecuencia"))
 ```
 
-#### ¿Pueden replicar estas tablas para las variables que indican el voto de las personas encuestadas en las elecciones generales y en el balotaje?
+> 📝 *¿Pueden replicar estas tablas para las variables que indican el voto de las personas encuestadas en las elecciones generales y en el balotaje?*
 
 <br></br>
 
@@ -140,9 +140,77 @@ summary(datos$imagen_bullrich)
 hist(datos$imagen_bullrich, main = "Histograma de la imagen de la candidata", ylab =  "Frecuencia", xlab = "Puntaje", col = "lightblue")
 ```
 
-#### ¿Pueden calcular la imagen para el resto de las figuras políticas?
+> 📝 *¿Pueden calcular la imagen para el resto de las figuras políticas?*
 
-#### ¿Cuál es la figura con mejor imagen en Córdoba? ¿Y la peor?
+> 📝 *¿Cuál es la figura con mejor imagen en Córdoba? ¿Y la peor?*
+
+<br></br>
+<br></br>
+
+## Análisis según diferentes grupos
+
+Veamos la imagen de Javier Milei según la identidad de género de las personas encuestadas. Comencemos por analizar sólo aquellas personas cuya identidad de género sea "mujer".
+
+```{r, warning=FALSE, message=FALSE}
+mujeres = filter(datos, datos$genero == "mujer")
+```
+
+Utilizando la función filter() hemos creado un nuevo objeto consistente en un dataframe con `r nrow(mujeres)` observaciones y `r ncol(mujeres)`. Como es esperable, entonces, el nuevo objeto tiene la misma estructura que la base de datos original, sólo que menos filas, dado que está compuesto sólo por aquellas personas cuya identidad de género es "mujer".
+
+Ahora calculamos la media de la imagen: 
+
+```{r, warning=FALSE, message=FALSE}
+mean(mujeres$imagen_milei, na.rm = TRUE)
+```
+<br></br>
+
+#### Entre las personas cuya identidad de género es "mujer", ¿la imagen de Javier Milei es más alta o más baja que la observada en la población general?
+
+> 📝 *¿Y si replicamos el análisis para cada una de las categorías de la variable "genero"?*
+
+> 📝 *¿Qué sucede respecto a la imagen del resto de las figuras políticas que consideramos en la encuesta? ¿Hay diferencias en la valoración entre diferentes indentidades de género?*
+
+<br></br>
+
+Veamos ahora la imagen de Juan Grabois entre las personas menores de 30 años. Para ello, replicamos el análisis anterior, pero creamos una nueva base de datos "filtrando" por edad. Entonces:
+
+```{r, warning=FALSE, message=FALSE}
+menores_30 = filter(datos, datos$edad < 30)
+mean(menores_30$imagen_grabois, na.rm = TRUE)
+```
+
+Ahora comparemos con el escenario para las personas de más de 50 años:
+
+```{r, warning=FALSE, message=FALSE}
+mayores_50 = filter(datos, datos$edad > 50)
+mean(mayores_50$imagen_grabois, na.rm = TRUE)
+```
+
+<br></br> 
+
+> 📝 *¿Qué sucede en el caso de personas cuya edad está comprendida entre los 30 y los 50 años?*
+
+> 📝 *¿Qué observamos para el resto de las figuras políticas?*
+
+
+<br></br> 
+
+Analicemos ahora qué puntaje le asignan las personas encuestadas al problema de la inflación, considerando sólo aquellas cuya identidad de género es "varón" y tienen menos de 30 años. Para ello, debemos agregar esta condición compuesta a la función filter(). Para unir estas dos condiciones haremos uso del operador lógico *&*, entendido como "y": varones "y" menores de 30. 
+
+```{r, warning=FALSE, message=FALSE}
+grupo = filter(datos, datos$edad < 30 & datos$genero == "varón")
+mean(grupo$problemas_inflacion, na.rm = TRUE)
+```
+Veamos ahora que sucede si consideramos sólo aquellas personas cuya identidad de género es "varón", pero tienen más de 60 años.
+
+```{r, warning=FALSE, message=FALSE}
+grupo = filter(datos, datos$edad > 60 & datos$genero == "varón")
+mean(grupo$problemas_inflacion, na.rm = TRUE)
+```
+<br></br>
+
+> 📝 *¿Podemos afirmar que existen diferencias en la valoración del problema entre estos dos grupos?  Para responder a la pregunta anterior, debemos hacer uso de los <b>intervalos de confianza</b>*
+
 
 <br></br>
 <br></br>
