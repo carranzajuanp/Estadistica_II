@@ -1,0 +1,44 @@
+---
+title: "Curso Rmarkdown"
+author: "JPC"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cargamos la base de datos
+
+Mediante el siguiente código **descargamos** la base de *datos* desde Google Sheets.
+
+```{r descarga, warning=FALSE, echo=FALSE, include=FALSE}
+library(googlesheets4)
+datos <- read_sheet('https://docs.google.com/spreadsheets/d/1FW4EtmIWLB5bo0mXUDiOGJeI9g6uCTxEM00clT2V9ug/edit?usp=sharing')
+```
+
+```{r head}
+head(datos)
+```
+
+
+## Haciendo un histograma
+
+Vamos a hacer un **histograma**.
+
+Esto es un nuevo párrafo.
+
+```{r histograma, warning=FALSE, echo=FALSE}
+datos$imagen_bullrich = as.numeric(datos$imagen_bullrich)
+hist(datos$imagen_bullrich, main = "Histograma",
+     ylab = "Frecuencia", xlab = "Imagen Bullrich")
+```
+
+
+## Correlación entre Inseguridad y Bullrich
+
+```{r correlacion}
+plot(datos$imagen_bullrich, datos$problemas_inseguridad)
+```
+

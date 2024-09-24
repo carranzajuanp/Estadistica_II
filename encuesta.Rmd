@@ -212,5 +212,88 @@ mean(grupo$problemas_inflacion, na.rm = TRUE)
 > 📝 *¿Podemos afirmar que existen diferencias en la valoración del problema entre estos dos grupos?  Para responder a la pregunta anterior, debemos hacer uso de los <b>intervalos de confianza</b>*
 
 
+## Construyendo intervalos de confianza
+
+Como sabemos, los límites de un intervalo de confianza para la media vienen dados por las siguientes expresiones:
+
+$$ limite \ inferior = \bar{x} - z_{\alpha / 2} \ \frac{s}{\sqrt n} $$
+$$ limite \ superior = \bar{x} + z_{\alpha / 2} \ \frac{s}{\sqrt n} $$
+
+En donde:
+
+$\bar{x}$ es la media muestral de la variable aleatoria sobre la que estamos intentando estimar el intervalo de confianza.
+
+$z_{\alpha / 2}$ es el puntaje z asociado al nivel de confianza $(1-\alpha)$ (o lo que es lo mismo, al nivel de significación $\alpha$).
+
+$s$ es la desviación estándar muestral.
+
+$n$ es el tamaño de la muestra.
+
+> 📝 *¿Por qué estamos utilizando la desviación estándar muestral ($s$) y no la observada en la población ($\sigma$)?*
+
+Por lo tanto, si queremos estimar el intervalo de confianza de la media de la variable aleatoria `r names(datos)[[3]]`, procedemos a calcular cada uno de estos elementos. Entonces:
+
+```{r, warning=FALSE, message=FALSE}
+x = mean(datos$edad)
+s = sd(datos$edad)
+n = nrow(datos)
+```
+
+En donde la función *nrow()* devuelve la cantidad de filas que tiene un dataframe, es decir, la cantidad de observaciones.
+
+Si utilizamos un nivel de confianza igual al 0.95 (o lo que es igual, un nivel de significación igual a 0.05), sabemos que el puntaje $z_{\alpha / 2}$ asociado a esta probabilidad es igual a 1.96. Por lo tanto:
+
+```{r, warning=FALSE, message=FALSE}
+limite_inferior = x - 1.96 * (s / sqrt(n) )
+limite_superior = x + 1.96 * (s / sqrt(n) )
+```
+
+Por lo tanto, podemos afirmar, con un nivel de confianza igual a 0.95, que la media **poblacional** de la variable aleatoria `r names(datos)[[3]]` se encuentra comprendida entre `r round(limite_inferior,3)` y `r round(limite_superior,3)`
+
+Una forma más simple de realizar el cálculo anterior consiste en utilizar la librería "gmodels". Para ello, primero instalamos la librería (borrando el # que se encuentra al comienzo de la línea de código), luego cargamos la librería al entorno de trabajo y utilizamos la función ci() para calcular los límites del intervalo:
+
+```{r, warning=FALSE, message=FALSE}
+# install.packages("gmodels")
+library(gmodels)
+ci(datos$edad, confidence=0.95)
+```
+Como se puede apreciar, el resultado de la función nos informa sobre el valor del estimador puntual $\bar{x}$, el límite inferior (CI lower), el límite superior (CI upper) y el error estándar de la estimación.
+
+Vamos a proceder a replicar el cálculo para la clasificación de problemas, concretamente para analizar cómo evalúan las persinas encuestadas al problema de la inflación y al problema del desempleo:
+
+```{r, warning=FALSE, message=FALSE}
+ci(datos$problemas_inflacion, confidence=0.95)
+```
+Por lo tanto, podemos afirmar, con un nivel de confianza de 0.95, que en la población el promedio de la valoración de la inflación se encuentra entre `r round(ci(datos$problemas_inflacion, confidence=0.95)[[2]],3)` y `r round(ci(datos$problemas_inflacion, confidence=0.95)[[3]],3)`.
+
+Veamos ahora qué sucede respecto del desempleo:
+
+```{r, warning=FALSE, message=FALSE}
+ci(datos$problemas_desempleo, confidence=0.95)
+```
+
+En consecuencia, podemos afirmar, con un nivel de confianza de 0.95, que en la población el promedio de la valoración del desempleo se encuentra entre `r round(ci(datos$problemas_desempleo, confidence=0.95)[[2]],3)` y `r round(ci(datos$problemas_desempleo, confidence=0.95)[[3]],3)`.
+
+> 📝 *En base a los resultados anteriores, teniendo en cuenta que la media muestral de la valoración de la inflación es igual a `r round(ci(datos$problemas_inflacion, confidence=0.95)[[1]],3)`, y la media muestral de la valoración del desempleo es igual a `r round(ci(datos$problemas_desempleo, confidence=0.95)[[1]],3)`; ¿Podemos afirmar que la inflación es un problema más relevante que el desempleo? ¿Por qué?*
+
+Para responder a la pregunta anterior, va una pequeña ayuda visual:
+
+```{r, warning=FALSE, message=FALSE, include=TRUE, echo=FALSE}
+aux = data.frame(Problema = c("Inflacion", "Desempleo"),
+                 Valoracion = c(ci(datos$problemas_inflacion, confidence=0.95)[[1]], ci(datos$problemas_desempleo, confidence=0.95)[[1]]),
+                 low = c(ci(datos$problemas_inflacion, confidence=0.95)[[2]], ci(datos$problemas_desempleo, confidence=0.95)[[2]]),
+                 up = c(ci(datos$problemas_inflacion, confidence=0.95)[[3]], ci(datos$problemas_desempleo, confidence=0.95)[[3]]))
+library(ggplot2)
+ggplot(aux, aes(Problema, Valoracion)) + geom_point() +  
+geom_errorbar(aes(ymin = low, ymax = up)) + coord_flip()
+                   
+```
+
+> 📝 *¿Qué sucede si, en vez de un nivel de confianza de 0.95, utilizamos un nivel de confianza igual a 0.99? ¿Los intervalos son más amplios o más angostos? ¿La estimación es más precisa o menos precisa?*
+
+> 📝 *¿Y si replicamos el análisis para el resto de los problemas? ¿Hay alguno que efectivamente sea más importante (o menos importante) que el resto?*
+
+> 📝 *Aplicando el mismo análisis, ¿Qué podemos afirmar sobre la imagen de cada una de las figuras políticas relevadas?*
+
 <br></br>
 <br></br>
